@@ -1,0 +1,6 @@
+---
+- name: configure base system and security
+  hosts: servers
+  become: true
+  roles:
+    - common

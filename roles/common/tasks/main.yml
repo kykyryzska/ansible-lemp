@@ -1,3 +1,33 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for roles/common
+- name: Update cache and upgrade
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+  changed_when: false
+- name: Install common packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - git
+      - vim
+      - ufw
+      - net-tools
+    state: present
+- name: Set timezone
+  community.general.timezone:
+    name: "Europe/Moscow"
+  notify: Restart system service
+- name : Enable firewall
+  community.general.ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+  notify: Restart UFW
+- name : Enable ssh port
+  community.general.ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+    direction: incoming
